@@ -1,4 +1,4 @@
-FROM golang:1.18.2-bullseye as deploy-builder
+FROM golang:1.22.1-bullseye as deploy-builder
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ CMD ["./app"]
 
 # --------------------------------------------
 #ローカル環境
-FROM golang:1.18.2 as dev
+FROM golang:1.22.1 as dev
 WORKDIR /app
 RUN go install github.com/cosmtrek/air@latest
-CMD ["Air"]
+CMD ["air"]
