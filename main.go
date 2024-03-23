@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/ogiogidayo/todo-app/config"
 	"golang.org/x/sync/errgroup"
 	"log"
 	"net"
@@ -26,7 +27,17 @@ func main() {
 	}
 }
 
-func run(ctx context.Context, l net.Listener) error {
+func run(ctx context.Context) error {
+	cfg, err := config.New()
+	if err != nil {
+		return err
+	}
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Port))
+	if err != nil {
+		log.Fatalf("failed to listen port %d: %v", cfg.Port, err)
+	}
+	url := fmt.Sprintf("http://localhost:%s", l.Addr().String())
+	log.Printf("start: with %s", url)
 	s := &http.Server{
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
