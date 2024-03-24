@@ -91,7 +91,11 @@ Dload  Upload   Total   Spent    Left  Speed
 }
 ]
 ```
-## Reference
-### Detailed Go Language Web Application Development
-##### Written by Yoichiro Shimizu
-https://amzn.asia/d/6VU2VFF
+
+[//]: # (## Reference)
+
+[//]: # (### Detailed Go Language Web Application Development)
+
+[//]: # (##### Written by Yoichiro Shimizu)
+
+[//]: # (https://amzn.asia/d/6VU2VFF)
