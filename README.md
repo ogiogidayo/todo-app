@@ -69,8 +69,8 @@ Dload  Upload   Total   Spent    Left  Speed
 100  1023  100   982  100    41   8634    360 --:--:-- --:--:-- --:--:--  9560
 {"id":77}%
 ```
-```zsh
 Display the tasks, and if the registered tasks are displayed, it is working as expected.
+```zsh
 $ curl -XGET -H "Authorization: Bearer $(curl -XPOST localhost:18000/login -d '{"user_name": "budou", "password":"test"}' | jq ".access_token" | sed "s/\"//g")" localhost:18000/tasks | jq
 % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 Dload  Upload   Total   Spent    Left  Speed
