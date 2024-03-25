@@ -1,9 +1,10 @@
-name: golang-ci
+name: CI
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "**.go"
-      - .github/workflows/golangci.yml
+      - .github/workflows/CI.yml
 jobs:
   golangci-lint:
     name: golangci-lint
