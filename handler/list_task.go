@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/ogiogidayo/todo-app/entity"
 	"github.com/ogiogidayo/todo-app/store"
-	"net/http"
 )
 
 type ListTask struct {

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator/v10"
 	"github.com/ogiogidayo/todo-app/handler"
 	"github.com/ogiogidayo/todo-app/store"
-	"net/http"
 )
 
 func NewMux() http.Handler {

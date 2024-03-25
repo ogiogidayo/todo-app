@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ogiogidayo/todo-app/config"
 	"log"
 	"net"
 	"os"
+
+	"github.com/ogiogidayo/todo-app/config"
 )
 
 func main() {

@@ -1,12 +1,13 @@
 package handler
 
 import (
-	"github.com/ogiogidayo/todo-app/entity"
-	"github.com/ogiogidayo/todo-app/store"
-	"github.com/ogiogidayo/todo-app/testutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/store"
+	"github.com/ogiogidayo/todo-app/testutil"
 )
 
 func TestListTask(t *testing.T) {
