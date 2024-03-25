@@ -1,5 +1,8 @@
 .PHONY: help build build-local up down logs ps test
 .DEFAULT_GOAL := help
+SHELL=/bin/bash
+BIN_DIR := $(shell pwd)/bin
+GOIMPORTS := $(abspath $(BIN_DIR)/goimports)
 
 DOCKER_TAG := latest
 build: ## Build docker image to deploy
@@ -32,6 +35,10 @@ migrate:  ## Execute migration
 
 generate: ## Generate codes
 	go generate ./...
+.PHONY: fmt
+
+fmt: $(GOIMPORTS) ## format code
+	find . -path ./proto -prune -o -name '*.go' -print | xargs $(GOIMPORTS) -w -local "github.com/ogiogidayo/todo-app"
 
 help: ## Show options
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
