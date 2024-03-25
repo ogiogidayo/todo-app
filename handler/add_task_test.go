@@ -47,7 +47,7 @@ func TestAddTask(t *testing.T) {
 			r := httptest.NewRequest(
 				http.MethodPost,
 				"/tasks",
-				bytes.NewReader(testutil.LeadFile(t, tt.reqFile)),
+				bytes.NewReader(testutil.LoadFile(t, tt.reqFile)),
 			)
 
 			sut := AddTask{
@@ -60,7 +60,7 @@ func TestAddTask(t *testing.T) {
 
 			resp := w.Result()
 			testutil.AssertResponse(t,
-				resp, tt.want.status, testutil.LeadFile(t, tt.want.rspFile))
+				resp, tt.want.status, testutil.LoadFile(t, tt.want.rspFile))
 		})
 	}
 }
