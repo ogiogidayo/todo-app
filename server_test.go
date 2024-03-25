@@ -17,7 +17,6 @@ func TestServer_Run(t *testing.T) {
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	eg, ctx := errgroup.WithContext(ctx)
-
 	mux := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
 	})
@@ -28,7 +27,7 @@ func TestServer_Run(t *testing.T) {
 	})
 	in := "message"
 	url := fmt.Sprintf("http://%s/%s", l.Addr().String(), in)
-	t.Logf("try request to %q", url)
+	t.Logf("tray request to %q", url)
 	rsp, err := http.Get(url)
 	if err != nil {
 		t.Errorf("failed to get: %+v", err)
@@ -36,16 +35,16 @@ func TestServer_Run(t *testing.T) {
 	defer rsp.Body.Close()
 	got, err := io.ReadAll(rsp.Body)
 	if err != nil {
-		t.Fatalf("failed to read body: %+v", err)
-	}
-	want := fmt.Sprintf("Hello, %s!", in)
-	if string(got) != want {
-		t.Errorf("want %q, but got %q", want, got)
+		t.Fatalf("failed to read body: %v", err)
 	}
 
 	cancel()
-
 	if err := eg.Wait(); err != nil {
 		t.Fatal(err)
+	}
+
+	want := fmt.Sprintf("Hello, %s!", in)
+	if string(got) != want {
+		t.Errorf("want %q, but got %q", want, got)
 	}
 }
