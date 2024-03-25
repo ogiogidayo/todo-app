@@ -27,5 +27,5 @@ func (lt *ListTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Status: t.Status,
 		})
 	}
-	RespondJson(ctx, w, rsp, http.StatusOK)
+	RespondJSON(ctx, w, rsp, http.StatusOK)
 }
