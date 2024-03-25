@@ -1,10 +1,9 @@
 name: CI
 on:
-  workflow_dispatch:
   pull_request:
     paths:
       - "**.go"
-      - .github/workflows/CI.yml
+      - .github/workflows/golangci.yml
 jobs:
   golangci-lint:
     name: golangci-lint
@@ -16,6 +15,6 @@ jobs:
         uses: reviewdog/action-golangci-lint@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          golangci_lint_flags: "--config=./.CI.yml ./..."
+          golangci_lint_flags: "--config=./.golangci.yml ./..."
           fail_on_error: true
           reporter: "github-pr-review"
