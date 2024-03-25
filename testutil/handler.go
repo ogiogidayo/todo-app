@@ -42,7 +42,7 @@ func AssertResponse(t *testing.T, got *http.Response, status int, body []byte) {
 	AssertJSON(t, body, gb)
 }
 
-func LeadFile(t *testing.T, path string) []byte {
+func LoadFile(t *testing.T, path string) []byte {
 	t.Helper()
 	bt, err := os.ReadFile(path)
 	if err != nil {
