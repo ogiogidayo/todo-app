@@ -4,10 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/config"
-	"time"
 )
 
 func New(ctx context.Context, cfg config.Config) (*sqlx.DB, func(), error) {
