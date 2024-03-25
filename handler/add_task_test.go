@@ -54,7 +54,7 @@ func TestAddTask(t *testing.T) {
 				Store: &store.TaskStore{
 					Tasks: map[entity.TaskID]*entity.Task{},
 				},
-				Validdator: validator.New(),
+				Validator: validator.New(),
 			}
 			sut.ServeHTTP(w, r)
 

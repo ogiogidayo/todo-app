@@ -10,8 +10,8 @@ import (
 )
 
 type AddTask struct {
-	Store      *store.TaskStore
-	Validdator *validator.Validate
+	Store     *store.TaskStore
+	Validator *validator.Validate
 }
 
 func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +25,7 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}, http.StatusInternalServerError)
 		return
 	}
-	err := at.Validdator.Struct(b)
+	err := at.Validator.Struct(b)
 	if err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
