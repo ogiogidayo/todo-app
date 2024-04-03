@@ -23,3 +23,16 @@ func (a *AddTask) AddTask(ctx context.Context, title string) (*entity.Task, erro
 	}
 	return t, nil
 }
+
+type ListTask struct {
+	DB   database.Queryer
+	Repo TaskLister
+}
+
+func (l *ListTask) ListTask(ctx context.Context) (entity.Tasks, error) {
+	ts, err := l.Repo.ListTask(ctx, l.DB)
+	if err != nil {
+		return nil, fmt.Errorf("faild to list: %w", err)
+	}
+	return ts, nil
+}
