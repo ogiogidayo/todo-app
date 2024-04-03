@@ -12,7 +12,7 @@ import (
 	"github.com/ogiogidayo/todo-app/config"
 )
 
-func New(ctx context.Context, cfg config.Config) (*sqlx.DB, func(), error) {
+func New(ctx context.Context, cfg *config.Config) (*sqlx.DB, func(), error) {
 	db, err := sql.Open("mysql",
 		fmt.Sprintf(
 			"%s:%s@tcp(%s:%d)/%s?parseTime=true",
