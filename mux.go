@@ -8,6 +8,7 @@ import (
 	"github.com/ogiogidayo/todo-app/config"
 	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/handler"
+	"github.com/ogiogidayo/todo-app/services"
 	"net/http"
 )
 
@@ -23,9 +24,14 @@ func NewMux(ctx context.Context, cfg *config.Config) (http.Handler, func(), erro
 		return nil, cleanup, err
 	}
 	r := database.Repository{Clocker: clock.RealClocker{}}
-	at := &handler.AddTask{DB: db, Repo: &r, Validator: v}
+	at := &handler.AddTask{
+		Services:  &services.AddTask{DB: db, Repo: &r},
+		Validator: v,
+	}
 	mux.Post("/tasks", at.ServeHTTP)
-	lt := handler.ListTask{DB: db, Repo: &r}
+	lt := &handler.ListTask{
+		Sevices: &services.ListTask{DB: db, Repo: &r},
+	}
 	mux.Get("/tasks", lt.ServeHTTP)
 	return mux, cleanup, err
 }
