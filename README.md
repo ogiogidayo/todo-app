@@ -1,6 +1,6 @@
 # todo_app
 
-## About the App
+## About
 This repository will create a web application that is an API server for managing TODO tasks with authentication.
 
 ## Endpoint
