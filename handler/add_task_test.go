@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/entity"
-	"github.com/ogiogidayo/todo-app/store"
 	"github.com/ogiogidayo/todo-app/testutil"
 )
 
@@ -52,7 +52,7 @@ func TestAddTask(t *testing.T) {
 			)
 
 			sut := AddTask{
-				Store: &store.TaskStore{
+				Store: &database.TaskStore{
 					Tasks: map[entity.TaskID]*entity.Task{},
 				},
 				Validator: validator.New(),

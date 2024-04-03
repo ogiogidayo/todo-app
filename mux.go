@@ -6,8 +6,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/config"
+	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/handler"
-	"github.com/ogiogidayo/todo-app/store"
 	"net/http"
 )
 
@@ -18,11 +18,11 @@ func NewMux(ctx context.Context, cfg *config.Config) (http.Handler, func(), erro
 		_, _ = w.Write([]byte(`{"status": "ok"}`))
 	})
 	v := validator.New()
-	db, cleanup, err := store.New(ctx, cfg)
+	db, cleanup, err := database.New(ctx, cfg)
 	if err != nil {
 		return nil, cleanup, err
 	}
-	r := store.Repository{Clocker: clock.RealClocker{}}
+	r := database.Repository{Clocker: clock.RealClocker{}}
 	at := &handler.AddTask{DB: db, Repo: &r, Validator: v}
 	mux.Post("/tasks", at.ServeHTTP)
 	lt := handler.ListTask{DB: db, Repo: &r}

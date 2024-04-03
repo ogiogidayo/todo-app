@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/entity"
-	"github.com/ogiogidayo/todo-app/store"
 	"github.com/ogiogidayo/todo-app/testutil"
 )
 
@@ -53,7 +53,7 @@ func TestListTask(t *testing.T) {
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest(http.MethodGet, "/tasks", nil)
 
-			sut := ListTask{Store: &store.TaskStore{Tasks: tt.tasks}}
+			sut := ListTask{Store: &database.TaskStore{Tasks: tt.tasks}}
 			sut.ServeHTTP(w, r)
 
 			resp := w.Result()

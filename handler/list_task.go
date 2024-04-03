@@ -4,13 +4,13 @@ import (
 	"github.com/jmoiron/sqlx"
 	"net/http"
 
+	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/entity"
-	"github.com/ogiogidayo/todo-app/store"
 )
 
 type ListTask struct {
 	DB   *sqlx.DB
-	Repo *store.Repository
+	Repo *database.Repository
 }
 
 type task struct {
