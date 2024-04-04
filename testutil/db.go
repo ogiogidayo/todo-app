@@ -3,9 +3,10 @@ package testutil
 import (
 	"database/sql"
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"os"
 	"testing"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func OpenDBForTest(t *testing.T) *sqlx.DB {

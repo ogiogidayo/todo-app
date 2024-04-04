@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator/v10"
 	"github.com/ogiogidayo/todo-app/clock"
@@ -9,7 +11,6 @@ import (
 	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/handler"
 	"github.com/ogiogidayo/todo-app/services"
-	"net/http"
 )
 
 func NewMux(ctx context.Context, cfg *config.Config) (http.Handler, func(), error) {

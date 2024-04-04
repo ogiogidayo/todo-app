@@ -2,11 +2,12 @@ package database
 
 import (
 	"context"
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/entity"
 	"github.com/ogiogidayo/todo-app/testutil"
-	"testing"
 )
 
 func TestRepository_ListTasks(t *testing.T) {
