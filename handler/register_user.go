@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 type RegisterUser struct {
@@ -41,7 +41,7 @@ func (ru *RegisterUser) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rep := struct {
-		ID entity.UserID
+		ID domain.UserID
 	}{ID: u.ID}
 	RespondJSON(ctx, w, rep, http.StatusOK)
 }

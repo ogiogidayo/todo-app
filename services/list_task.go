@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ogiogidayo/todo-app/database"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 type ListTask struct {
@@ -13,7 +13,7 @@ type ListTask struct {
 	Repo TaskLister
 }
 
-func (l *ListTask) ListTasks(ctx context.Context) (entity.Tasks, error) {
+func (l *ListTask) ListTasks(ctx context.Context) (domain.Tasks, error) {
 	ts, err := l.Repo.ListTasks(ctx, l.DB)
 	if err != nil {
 		return nil, fmt.Errorf("faild to list: %w", err)

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 type AddTask struct {
@@ -31,9 +31,9 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t := &entity.Task{
+	t := &domain.Task{
 		Title:  b.Title,
-		Status: entity.TaskStatusTodo,
+		Status: domain.TaskStatusTodo,
 	}
 	t, err := at.Services.AddTask(ctx, t.Title)
 	if err != nil {

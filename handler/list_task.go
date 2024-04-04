@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 type ListTask struct {
@@ -11,9 +11,9 @@ type ListTask struct {
 }
 
 type task struct {
-	ID     entity.TaskID     `json:"id"`
+	ID     domain.TaskID     `json:"id"`
 	Title  string            `json:"title"`
-	Status entity.TaskStatus `json:"status"`
+	Status domain.TaskStatus `json:"status"`
 }
 
 func (lt *ListTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {

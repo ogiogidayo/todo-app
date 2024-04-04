@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/ogiogidayo/todo-app/clock"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 	"github.com/ogiogidayo/todo-app/testutil"
 )
 
@@ -28,13 +28,13 @@ func TestRepository_ListTasks(t *testing.T) {
 	}
 }
 
-func prepareTasks(ctx context.Context, t *testing.T, con Execer) entity.Tasks {
+func prepareTasks(ctx context.Context, t *testing.T, con Execer) domain.Tasks {
 	t.Helper()
 	if _, err := con.ExecContext(ctx, "DELETE FROM task;"); err != nil {
 		t.Logf("failed to initialize task: %v", err)
 	}
 	c := clock.FixedClocker{}
-	wants := entity.Tasks{
+	wants := domain.Tasks{
 		{
 			Title: "want task 1", Status: "todo",
 			Created: c.Now(), Modified: c.Now(),
@@ -65,8 +65,8 @@ func prepareTasks(ctx context.Context, t *testing.T, con Execer) entity.Tasks {
 	if err != nil {
 		t.Fatal(err)
 	}
-	wants[0].ID = entity.TaskID(id)
-	wants[1].ID = entity.TaskID(id + 1)
-	wants[2].ID = entity.TaskID(id + 2)
+	wants[0].ID = domain.TaskID(id)
+	wants[1].ID = domain.TaskID(id + 1)
+	wants[2].ID = domain.TaskID(id + 2)
 	return wants
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ogiogidayo/todo-app/database"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,12 +16,12 @@ type RegisterUser struct {
 
 func (r *RegisterUser) RegisterUser(
 	ctx context.Context, name, password, role string,
-) (*entity.User, error) {
+) (*domain.User, error) {
 	pw, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("cannot hash password: %w", err)
 	}
-	u := &entity.User{
+	u := &domain.User{
 		Name:     name,
 		Password: string(pw),
 		Role:     role,

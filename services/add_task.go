@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ogiogidayo/todo-app/database"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 type AddTask struct {
@@ -13,10 +13,10 @@ type AddTask struct {
 	Repo TaskAdder
 }
 
-func (a *AddTask) AddTask(ctx context.Context, title string) (*entity.Task, error) {
-	t := &entity.Task{
+func (a *AddTask) AddTask(ctx context.Context, title string) (*domain.Task, error) {
+	t := &domain.Task{
 		Title:  title,
-		Status: entity.TaskStatusTodo,
+		Status: domain.TaskStatusTodo,
 	}
 	err := a.Repo.AddTask(ctx, a.DB, t)
 	if err != nil {

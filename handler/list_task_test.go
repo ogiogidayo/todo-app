@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 	"github.com/ogiogidayo/todo-app/testutil"
 )
 
@@ -17,11 +17,11 @@ func TestListTask(t *testing.T) {
 		rspFile string
 	}
 	tests := map[string]struct {
-		tasks []*entity.Task
+		tasks []*domain.Task
 		want  want
 	}{
 		"ok": {
-			tasks: []*entity.Task{
+			tasks: []*domain.Task{
 				{
 					ID:     1,
 					Title:  "test1",
@@ -39,7 +39,7 @@ func TestListTask(t *testing.T) {
 			},
 		},
 		"empty": {
-			tasks: []*entity.Task{},
+			tasks: []*domain.Task{},
 			want: want{
 				status:  http.StatusOK,
 				rspFile: "testdata/list_task/empty_rsp.json.golden",
@@ -55,7 +55,7 @@ func TestListTask(t *testing.T) {
 			r := httptest.NewRequest(http.MethodGet, "/tasks", nil)
 
 			moq := &ListTaskServiceMock{}
-			moq.ListTasksFunc = func(ctx context.Context) (entity.Tasks, error) {
+			moq.ListTasksFunc = func(ctx context.Context) (domain.Tasks, error) {
 				if tt.tasks != nil {
 					return tt.tasks, nil
 				}

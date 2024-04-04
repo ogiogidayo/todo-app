@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 	"github.com/ogiogidayo/todo-app/testutil"
 )
 
@@ -53,9 +53,9 @@ func TestAddTask(t *testing.T) {
 			)
 
 			moq := &AddTaskServiceMock{}
-			moq.AddTaskFunc = func(ctx context.Context, title string) (*entity.Task, error) {
+			moq.AddTaskFunc = func(ctx context.Context, title string) (*domain.Task, error) {
 				if tt.want.status == http.StatusOK {
-					return &entity.Task{ID: 1}, nil
+					return &domain.Task{ID: 1}, nil
 				}
 				return nil, errors.New("error from mock")
 			}

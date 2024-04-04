@@ -3,13 +3,13 @@ package database
 import (
 	"context"
 
-	"github.com/ogiogidayo/todo-app/entity"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 func (r *Repository) ListTasks(
 	ctx context.Context, db Queryer,
-) (entity.Tasks, error) {
-	tasks := entity.Tasks{}
+) (domain.Tasks, error) {
+	tasks := domain.Tasks{}
 	sql := `SELECT
 			id, title,
 			status, created, modified
@@ -20,7 +20,7 @@ func (r *Repository) ListTasks(
 	return tasks, nil
 }
 
-func (r *Repository) AddTask(ctx context.Context, db Execer, t *entity.Task) error {
+func (r *Repository) AddTask(ctx context.Context, db Execer, t *domain.Task) error {
 	t.Created = r.Clocker.Now()
 	t.Modified = r.Clocker.Now()
 	sql := `INSERT INTO task
@@ -37,7 +37,7 @@ func (r *Repository) AddTask(ctx context.Context, db Execer, t *entity.Task) err
 	if err != nil {
 		return err
 	}
-	t.ID = entity.TaskID(id)
+	t.ID = domain.TaskID(id)
 
 	return nil
 }
