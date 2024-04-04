@@ -16,7 +16,7 @@ func (r *Repository) RegisterUser(ctx context.Context, db Execer, u *entity.User
     	(name, password, role, created, modified)
 	VALUES (?, ?, ?, ?, ?)`
 
-	result, err := db.ExecContext(ctx, sql, u.ID, u.Name, u.Password, u.Role, u.Created, u.Modified)
+	result, err := db.ExecContext(ctx, sql, u.Name, u.Password, u.Role, u.Created, u.Modified)
 	if err != nil {
 		var mysqlErr *mysql.MySQLError
 		if errors.As(err, &mysqlErr) && mysqlErr.Number == ErrCodeMySQLDuplicateEntry {
