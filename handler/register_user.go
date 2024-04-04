@@ -8,8 +8,8 @@ import (
 )
 
 type RegisterUser struct {
-	Services  RegisterUserServices
-	validator *validator.Validate
+	Services  RegisterUserService
+	Validator *validator.Validate
 }
 
 func (ru *RegisterUser) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +25,7 @@ func (ru *RegisterUser) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}, http.StatusInternalServerError)
 		return
 	}
-	if err := ru.validator.Struct(b); err != nil {
+	if err := ru.Validator.Struct(b); err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
 		}, http.StatusBadRequest)
