@@ -3,6 +3,11 @@
 ## About
 This repository will create a web application that is an API server for managing TODO tasks with authentication.
 
+::: warning
+**WARNING**
+The authentication feature is currently under development.
+:::
+
 ## Endpoint
 
 HTTP Method | Path         | Overview
