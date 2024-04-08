@@ -16,7 +16,7 @@ import (
 //go:embed cert/secret.pem
 var rawPrivKey []byte
 
-// go:｀ cert/public.pem
+//go:embed cert/public.pem
 var rawPubKey []byte
 
 type JWTer struct {
@@ -31,21 +31,22 @@ type Store interface {
 	Load(ctx context.Context, key string) (domain.UserID, error)
 }
 
-func NewJWTer(s Store) (*JWTer, error) {
+func NewJWTer(s Store, c clock.Clocker) (*JWTer, error) {
 	j := &JWTer{Store: s}
-	privKey, err := parse(rawPrivKey)
+	privkey, err := parse(rawPrivKey)
 	if err != nil {
-		return nil, fmt.Errorf("failed in NewJWTer: %w", err)
+		return nil, fmt.Errorf("failed in NewJWTer: private key: %w", err)
 	}
-	pubKey, err := parse(rawPubKey)
+	pubkey, err := parse(rawPubKey)
 	if err != nil {
-		return nil, fmt.Errorf("faild in NewJWTer: %w", err)
+		return nil, fmt.Errorf("failed in NewJWTer: public key: %w", err)
 	}
-	j.PrivateKey = privKey
-	j.PublicKey = pubKey
-	j.Clocker = clock.RealClocker{}
+	j.PrivateKey = privkey
+	j.PublicKey = pubkey
+	j.Clocker = c
 	return j, nil
 }
+
 func parse(rawKey []byte) (jwk.Key, error) {
 	key, err := jwk.ParseKey(rawKey, jwk.WithPEM(true))
 	if err != nil {
