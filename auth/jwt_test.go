@@ -3,10 +3,19 @@ package auth
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"github.com/google/uuid"
+	"github.com/lestrrat-go/jwx/v2/jwa"
+	"github.com/lestrrat-go/jwx/v2/jwk"
+	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/domain"
 	"github.com/ogiogidayo/todo-app/testutil/fixture"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
 	"testing"
+	"time"
 )
 
 func TestEmbed(t *testing.T) {
@@ -41,5 +50,55 @@ func TestJWTer_GenerateToken(t *testing.T) {
 	}
 	if len(got) == 0 {
 		t.Errorf("token is empty")
+	}
+}
+
+func TestJWTer_GetToken(t *testing.T) {
+	t.Parallel()
+
+	c := clock.FixedClocker{}
+	want, err := jwt.NewBuilder().
+		JwtID(uuid.New().String()).
+		Issuer(`github.com/ogiogidayo/todo-app`).
+		Subject("access_token").
+		IssuedAt(c.Now()).
+		Expiration(c.Now().Add(30*time.Minute)).
+		Claim(RoleKey, "test").
+		Claim(UserNameKey, "test").
+		Build()
+	if err != nil {
+		t.Fatal(err)
+	}
+	pkey, err := jwk.ParseKey(rawPrivKey, jwk.WithPEM(true))
+	if err != nil {
+		t.Fatal(err)
+	}
+	signed, err := jwt.Sign(want, jwt.WithKey(jwa.RS256, pkey))
+	if err != nil {
+		t.Fatal(err)
+	}
+	userID := domain.UserID(20)
+	ctx := context.Background()
+	moq := &StoreMock{}
+	moq.LoadFunc = func(ctx context.Context, key string) (domain.UserID, error) {
+		return userID, nil
+	}
+	sut, err := NewJWTer(moq, c)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest(
+		http.MethodGet,
+		`https://github.com/ogiogidayo/todo-app`,
+		nil,
+	)
+	req.Header.Set(`Authorization`, fmt.Sprintf(`Bearer %s`, signed))
+	got, err := sut.GetToken(ctx, req)
+	if err != nil {
+		t.Fatalf("want no error, but got %v", err)
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("GetToken() got = %v, want = %v", got, want)
 	}
 }
