@@ -10,6 +10,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/domain"
+	"net/http"
 	"time"
 )
 
@@ -82,4 +83,22 @@ func (j *JWTer) GenerateToken(ctx context.Context, u domain.User) ([]byte, error
 		return nil, err
 	}
 	return signed, nil
+}
+
+func (j *JWTer) GetToken(ctx context.Context, r *http.Request) (jwt.Token, error) {
+	token, err := jwt.ParseRequest(
+		r,
+		jwt.WithKey(jwa.RS256, j.PublicKey),
+		jwt.WithValidate(false),
+	)
+	if err != nil {
+		return nil, err
+	}
+	if err := jwt.Validate(token, jwt.WithClock(j.Clocker)); err != nil {
+		return nil, fmt.Errorf("GetToken: failed to validate token: %v", err)
+	}
+	if _, err := j.Store.Load(ctx, token.JwtID()); err != nil {
+		return nil, fmt.Errorf("GetToken: %q expired: %w", token.JwtID(), err)
+	}
+	return token, nil
 }
