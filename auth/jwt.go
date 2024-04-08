@@ -4,15 +4,19 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"github.com/google/uuid"
+	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
+	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/domain"
+	"time"
 )
 
 //go:embed cert/secret.pem
 var rawPrivKey []byte
 
-//go:embed cert/public.pem
+// go:｀ cert/public.pem
 var rawPubKey []byte
 
 type JWTer struct {
@@ -48,4 +52,33 @@ func parse(rawKey []byte) (jwk.Key, error) {
 		return nil, err
 	}
 	return key, nil
+}
+
+const (
+	RoleKey     = "role"
+	UserNameKey = "user_name"
+)
+
+func (j *JWTer) GenerateToken(ctx context.Context, u domain.User) ([]byte, error) {
+	tok, err := jwt.NewBuilder().
+		JwtID(uuid.New().String()).
+		Issuer(`github.com/ogiogidayo/todo-app`).
+		Subject("access_token").
+		IssuedAt(j.Clocker.Now()).
+		Expiration(j.Clocker.Now().Add(30*time.Minute)).
+		Claim(RoleKey, u.Role).
+		Claim(UserNameKey, u.Name).
+		Build()
+	if err != nil {
+		return nil, fmt.Errorf("GetToken: failed to build token: %w", err)
+	}
+	if err := j.Store.Save(ctx, tok.JwtID(), u.ID); err != nil {
+		return nil, err
+	}
+
+	signed, err := jwt.Sign(tok, jwt.WithKey(jwa.RS256, j.PrivateKey))
+	if err != nil {
+		return nil, err
+	}
+	return signed, nil
 }
