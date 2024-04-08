@@ -9,6 +9,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/ogiogidayo/todo-app/clock"
+	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/domain"
 	"github.com/ogiogidayo/todo-app/testutil/fixture"
 	"net/http"
@@ -100,5 +101,87 @@ func TestJWTer_GetToken(t *testing.T) {
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("GetToken() got = %v, want = %v", got, want)
+	}
+}
+
+type FixedTomorrow struct{}
+
+func (c FixedTomorrow) Now() time.Time {
+	return clock.FixedClocker{}.Now().Add(24 * time.Hour)
+}
+
+func TestJWTer_GetToken_NG(t *testing.T) {
+	t.Parallel()
+
+	c := clock.FixedClocker{}
+	want, err := jwt.NewBuilder().
+		JwtID(uuid.New().String()).
+		Issuer(`github.com/ogiogidayo/todo-app`).
+		Subject("access_token").
+		IssuedAt(c.Now()).
+		Expiration(c.Now().Add(30*time.Minute)).
+		Claim(RoleKey, "test").
+		Claim(UserNameKey, "test").
+		Build()
+	if err != nil {
+		t.Fatal(err)
+	}
+	pkey, err := jwk.ParseKey(rawPrivKey, jwk.WithPEM(true))
+	if err != nil {
+		t.Fatal(err)
+	}
+	signed, err := jwt.Sign(want, jwt.WithKey(jwa.RS256, pkey))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	type moq struct {
+		userID domain.UserID
+		err    error
+	}
+
+	tests := map[string]struct {
+		c   clock.Clocker
+		moq moq
+	}{
+		"expired": {
+			c: FixedTomorrow{},
+		},
+		"notFoundInDatabase": {
+			c: clock.FixedClocker{},
+			moq: moq{
+				err: database.ErrNotFound,
+			},
+		},
+	}
+
+	for n, tt := range tests {
+		tt := tt
+		t.Run(n, func(t *testing.T) {
+			t.Parallel()
+
+			ctx := context.Background()
+			moq := &StoreMock{}
+			moq.LoadFunc = func(ctx context.Context, key string) (domain.UserID, error) {
+				return tt.moq.userID, tt.moq.err
+			}
+			sut, err := NewJWTer(moq, tt.c)
+			if err != nil {
+				t.Fatal(err)
+			}
+			req := httptest.NewRequest(
+				http.MethodGet,
+				`https://github.com/ogiogidayo/todo-app`,
+				nil,
+			)
+			req.Header.Set(`Authorization`, fmt.Sprintf(`Bearer %s`, signed))
+			got, err := sut.GetToken(ctx, req)
+			if err == nil {
+				t.Fatal("want error, but got nil")
+			}
+			if got != nil {
+				t.Errorf("want nil, but got %v", got)
+			}
+		})
 	}
 }
