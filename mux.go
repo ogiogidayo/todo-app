@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/ogiogidayo/todo-app/auth"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -24,7 +25,25 @@ func NewMux(ctx context.Context, cfg *config.Config) (http.Handler, func(), erro
 	if err != nil {
 		return nil, cleanup, err
 	}
-	r := database.Repository{Clocker: clock.RealClocker{}}
+	clocker := clock.RealClocker{}
+	r := database.Repository{Clocker: clocker}
+	rcli, err := database.NewKVS(ctx, cfg)
+	if err != nil {
+		return nil, cleanup, err
+	}
+	jwter, err := auth.NewJWTer(rcli, clocker)
+	if err != nil {
+		return nil, cleanup, err
+	}
+	l := &handler.Login{
+		Service: &services.Login{
+			DB:             db,
+			Repo:           &r,
+			TokenGenerator: jwter,
+		},
+		Validatpr: v,
+	}
+	mux.Post("/login", l.ServeHTTP)
 	at := &handler.AddTask{
 		Services:  &services.AddTask{DB: db, Repo: &r},
 		Validator: v,
