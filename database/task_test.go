@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/ogiogidayo/todo-app/testutil/fixture"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -26,6 +27,23 @@ func TestRepository_ListTasks(t *testing.T) {
 	if d := cmp.Diff(gots, wants); len(d) != 0 {
 		t.Fatalf("differs: (-got +want)\n%s", d)
 	}
+}
+
+func prepareUser(ctx context.Context, t *testing.T, db Execer) domain.UserID {
+	t.Helper()
+	u := fixture.User(nil)
+	result, err := db.ExecContext(ctx,
+		`INSERT INTO user (name, password, role, created, modified)
+				VALUES (?, ?, ?, ?, ?);`,
+		u.Name, u.Password, u.Role, u.Created, u.Modified)
+	if err != nil {
+		t.Fatalf("insert user: %v", err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		t.Fatalf("got user_id: %v", err)
+	}
+	return domain.UserID(id)
 }
 
 func prepareTasks(ctx context.Context, t *testing.T, con Execer) domain.Tasks {
