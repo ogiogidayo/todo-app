@@ -9,7 +9,7 @@ import (
 )
 
 type RegisterUser struct {
-	Services  RegisterUserService
+	Service   RegisterUserService
 	Validator *validator.Validate
 }
 
@@ -33,7 +33,7 @@ func (ru *RegisterUser) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := ru.Services.RegisterUser(ctx, b.Name, b.Password, b.Role)
+	u, err := ru.Service.RegisterUser(ctx, b.Name, b.Password, b.Role)
 	if err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
