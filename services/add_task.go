@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
-
+	"github.com/ogiogidayo/todo-app/auth"
 	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/domain"
 )
@@ -14,7 +14,12 @@ type AddTask struct {
 }
 
 func (a *AddTask) AddTask(ctx context.Context, title string) (*domain.Task, error) {
+	id, ok := auth.GetUserID(ctx)
+	if !ok {
+		return nil, fmt.Errorf("user_id not found")
+	}
 	t := &domain.Task{
+		UserID: id,
 		Title:  title,
 		Status: domain.TaskStatusTodo,
 	}
@@ -22,5 +27,5 @@ func (a *AddTask) AddTask(ctx context.Context, title string) (*domain.Task, erro
 	if err != nil {
 		return nil, fmt.Errorf("failed to register: %w", err)
 	}
-	return t, nil
+	return t, err
 }
