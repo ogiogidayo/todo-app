@@ -20,14 +20,16 @@ func (r *Repository) ListTasks(
 	return tasks, nil
 }
 
-func (r *Repository) AddTask(ctx context.Context, db Execer, t *domain.Task) error {
+func (r *Repository) AddTask(
+	ctx context.Context, db Execer, t *domain.Task,
+) error {
 	t.Created = r.Clocker.Now()
 	t.Modified = r.Clocker.Now()
 	sql := `INSERT INTO task
-		(title, status, created, modified)
-	VALUES (?, ?, ?, ?)`
+			(user_id, title, status, created, modified)
+	VALUES (?, ?, ?, ?, ?)`
 	result, err := db.ExecContext(
-		ctx, sql, t.Title, t.Status,
+		ctx, sql, t.UserID, t.Title, t.Status,
 		t.Created, t.Modified,
 	)
 	if err != nil {
@@ -38,6 +40,5 @@ func (r *Repository) AddTask(ctx context.Context, db Execer, t *domain.Task) err
 		return err
 	}
 	t.ID = domain.TaskID(id)
-
 	return nil
 }
