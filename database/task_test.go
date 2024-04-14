@@ -46,35 +46,41 @@ func prepareUser(ctx context.Context, t *testing.T, db Execer) domain.UserID {
 	return domain.UserID(id)
 }
 
-func prepareTasks(ctx context.Context, t *testing.T, con Execer) domain.Tasks {
+func prepareTasks(ctx context.Context, t *testing.T, con Execer) (domain.UserID, domain.Tasks) {
 	t.Helper()
-	if _, err := con.ExecContext(ctx, "DELETE FROM task;"); err != nil {
-		t.Logf("failed to initialize task: %v", err)
-	}
+	userID := prepareUser(ctx, t, con)
+	otherUserID := prepareUser(ctx, t, con)
 	c := clock.FixedClocker{}
 	wants := domain.Tasks{
 		{
-			Title: "want task 1", Status: "todo",
+			UserID: userID,
+			Title:  "want task 1", Status: "todo",
 			Created: c.Now(), Modified: c.Now(),
 		},
 		{
-			Title: "want task 2", Status: "todo",
-			Created: c.Now(), Modified: c.Now(),
-		},
-		{
-			Title: "want task 3", Status: "done",
+			UserID: userID,
+			Title:  "want task 2", Status: "done",
 			Created: c.Now(), Modified: c.Now(),
 		},
 	}
+	tasks := domain.Tasks{
+		wants[0],
+		{
+			UserID: otherUserID,
+			Title:  "not want task", Status: "todo",
+			Created: c.Now(), Modified: c.Now(),
+		},
+		wants[1],
+	}
 	result, err := con.ExecContext(ctx,
-		`INSERT INTO task (title, status, created, modified)
+		`INSERT INTO task (user_id, title, status, created, modified)
 			VALUES
-			    (?, ?, ?, ?),
-			    (?, ?, ?, ?),
-			    (?, ?, ?, ?);`,
-		wants[0].Title, wants[0].Status, wants[0].Created, wants[0].Modified,
-		wants[1].Title, wants[1].Status, wants[1].Created, wants[1].Modified,
-		wants[2].Title, wants[2].Status, wants[2].Created, wants[2].Modified,
+			    (?, ?, ?, ?, ?),
+			    (?, ?, ?, ?, ?),
+			    (?, ?, ?, ?, ?);`,
+		tasks[0].UserID, tasks[0].Title, tasks[0].Status, tasks[0].Created, tasks[0].Modified,
+		tasks[1].UserID, tasks[1].Title, tasks[1].Status, tasks[1].Created, tasks[1].Modified,
+		tasks[2].UserID, tasks[2].Title, tasks[2].Status, tasks[2].Created, tasks[2].Modified,
 	)
 	if err != nil {
 		t.Fatal(err)
@@ -83,8 +89,8 @@ func prepareTasks(ctx context.Context, t *testing.T, con Execer) domain.Tasks {
 	if err != nil {
 		t.Fatal(err)
 	}
-	wants[0].ID = domain.TaskID(id)
-	wants[1].ID = domain.TaskID(id + 1)
-	wants[2].ID = domain.TaskID(id + 2)
-	return wants
+	tasks[0].ID = domain.TaskID(id)
+	tasks[1].ID = domain.TaskID(id + 1)
+	tasks[2].ID = domain.TaskID(id + 2)
+	return userID, wants
 }
