@@ -3,23 +3,28 @@ package handler
 import (
 	"net/http"
 
-	"github.com/ogiogidayo/todo-app/entity"
-	"github.com/ogiogidayo/todo-app/store"
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 type ListTask struct {
-	Store *store.TaskStore
+	Sevices ListTaskService
 }
 
 type task struct {
-	ID     entity.TaskID     `json:"id"`
+	ID     domain.TaskID     `json:"id"`
 	Title  string            `json:"title"`
-	Status entity.TaskStatus `json:"status"`
+	Status domain.TaskStatus `json:"status"`
 }
 
 func (lt *ListTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	tasks := lt.Store.All()
+	tasks, err := lt.Sevices.ListTasks(ctx)
+	if err != nil {
+		RespondJSON(ctx, w, &ErrResponse{
+			Message: err.Error(),
+		}, http.StatusInternalServerError)
+		return
+	}
 	rsp := []task{}
 	for _, t := range tasks {
 		rsp = append(rsp, task{

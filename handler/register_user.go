@@ -8,15 +8,17 @@ import (
 	"github.com/ogiogidayo/todo-app/domain"
 )
 
-type AddTask struct {
-	Services  AddTaskService
+type RegisterUser struct {
+	Service   RegisterUserService
 	Validator *validator.Validate
 }
 
-func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (ru *RegisterUser) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var b struct {
-		Title string `json:"title" validate:"required"`
+		Name     string `json:"name" validate:"required"`
+		Password string `json:"password" validate:"required"`
+		Role     string `json:"role" validate:"required"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
@@ -24,26 +26,22 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}, http.StatusInternalServerError)
 		return
 	}
-	if err := at.Validator.Struct(b); err != nil {
+	if err := ru.Validator.Struct(b); err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
 		}, http.StatusBadRequest)
 		return
 	}
 
-	t := &domain.Task{
-		Title:  b.Title,
-		Status: domain.TaskStatusTodo,
-	}
-	t, err := at.Services.AddTask(ctx, t.Title)
+	u, err := ru.Service.RegisterUser(ctx, b.Name, b.Password, b.Role)
 	if err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
-		}, http.StatusInternalServerError)
+		}, http.StatusBadRequest)
 		return
 	}
-	rsp := struct {
-		ID int `json:"id"`
-	}{ID: int(t.ID)}
-	RespondJSON(ctx, w, rsp, http.StatusOK)
+	rep := struct {
+		ID domain.UserID
+	}{ID: u.ID}
+	RespondJSON(ctx, w, rep, http.StatusOK)
 }

@@ -1,9 +1,12 @@
 # todo_app
 
-## About the App
+## About
 This repository will create a web application that is an API server for managing TODO tasks with authentication.
 
-Eventually, the following endpoints will be implemented.
+> [!WARNING]
+> The authentication feature is currently under development.
+
+## Endpoint
 
 HTTP Method | Path         | Overview
 ----------|------------|--------------------------
@@ -13,6 +16,7 @@ POST     | /tasks   | Register tasks using an access token
 GET      | /tasks   | List tasks using an access token
 GET      | /admin   | Only users with administrative privileges can access
 
+## Makefile
 Docker Compose is used to launch the API server, MySQL, and Redis. The commands that will mainly be executed are pre-defined in the Makefile.
 ```zsh
 $ make
