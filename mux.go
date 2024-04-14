@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/ogiogidayo/todo-app/auth"
 	"net/http"
+
+	"github.com/ogiogidayo/todo-app/auth"
 
 	"github.com/go-chi/chi"
 	"github.com/go-playground/validator/v10"

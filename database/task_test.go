@@ -2,9 +2,10 @@ package database
 
 import (
 	"context"
+	"testing"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/ogiogidayo/todo-app/testutil/fixture"
-	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/go-cmp/cmp"

@@ -3,9 +3,10 @@ package testutil
 import (
 	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"os"
 	"testing"
+
+	"github.com/go-redis/redis/v8"
 )
 
 func OpenRedisForTest(t *testing.T) *redis.Client {

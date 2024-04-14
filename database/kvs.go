@@ -3,10 +3,11 @@ package database
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/ogiogidayo/todo-app/config"
 	"github.com/ogiogidayo/todo-app/domain"
-	"time"
 )
 
 func NewKVS(ctx context.Context, cfg *config.Config) (*KVS, error) {

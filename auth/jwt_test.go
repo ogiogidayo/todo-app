@@ -4,6 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"reflect"
+	"testing"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
@@ -12,11 +18,6 @@ import (
 	"github.com/ogiogidayo/todo-app/database"
 	"github.com/ogiogidayo/todo-app/domain"
 	"github.com/ogiogidayo/todo-app/testutil/fixture"
-	"net/http"
-	"net/http/httptest"
-	"reflect"
-	"testing"
-	"time"
 )
 
 func TestEmbed(t *testing.T) {

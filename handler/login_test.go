@@ -3,11 +3,12 @@ package handler
 import (
 	"bytes"
 	"context"
-	"github.com/go-playground/validator/v10"
-	"github.com/ogiogidayo/todo-app/testutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/ogiogidayo/todo-app/testutil"
 )
 
 func TestLogin_ServeHTTP(t *testing.T) {

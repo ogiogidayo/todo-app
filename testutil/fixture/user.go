@@ -1,10 +1,11 @@
 package fixture
 
 import (
-	"github.com/ogiogidayo/todo-app/domain"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/ogiogidayo/todo-app/domain"
 )
 
 func User(u *domain.User) *domain.User {

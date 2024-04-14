@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"github.com/ogiogidayo/todo-app/auth"
 	"net/http"
+
+	"github.com/ogiogidayo/todo-app/auth"
 )
 
 func AuthMiddleware(j *auth.JWTer) func(next http.Handler) http.Handler {

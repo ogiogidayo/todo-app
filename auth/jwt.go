@@ -4,14 +4,15 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/lestrrat-go/jwx/v2/jwt"
 	"github.com/ogiogidayo/todo-app/clock"
 	"github.com/ogiogidayo/todo-app/domain"
-	"net/http"
-	"time"
 )
 
 //go:embed cert/secret.pem
